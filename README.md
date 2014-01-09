@@ -2,7 +2,8 @@
 <!-- START DESCRIPTION lightstreamer-example-stocklist-adapter-jms -->
 
 This example shows how to integrate Lightstreamer Server with a JMS (Java Message Service) data feed.<br>
-<b>For a more comprehensive solution, a separate product exists: the Lightstreamer JMS Gateway, which offers full-blown JMS APIs for JavaScript and other languages and does not require any server-side coding.</b>
+<b>For a more comprehensive solution, a separate product exists: the Lightstreamer JMS Gateway, which offers full-blown JMS APIs for JavaScript and other languages and does not require any server-side coding.</b><br>
+For any inquiry, please email info@lightstreamer.com.
 
 This application is the same as the [Lighstreamer - Basic Stock-List Demo - HTML Client](http://www.lightstreamer.com/demos#StockListDemo), with the difference that the market-data-feed simulator is an external process that communicates with the Lightstreamer Data Adapter through JMS.
 So, the goal of this demo is to show how a Lightstreamer Data Adapter can obtain data from an external source through JMS middleware. Both the Data Generator (feed process) and the Data Adapter source code are provided.
@@ -24,6 +25,7 @@ The workflow of the application is the following:
 - The Data Adapter, in its subscribe() method implementation, sends a message to a JMS queue in order to request the generator to start publishing the real-time data for a certain item.
 - The Data Generator reads a requests from the queue and publishes to a JMS topic the current values for the subscribed item (i.e. snapshot) and any subsequent updates.
 - The Data Adapter receives updates through the JMS topic and injects them into the Lightstreamer Kernel which in turn sends them to clients.
+<br>
 <i>NOTE: To keep the code simple and clear, the demo does not include advanced fail-over and recovery mechanisms in the communication between the Adapter and the Generator.</i>
 
 ## Dig the Code ##
@@ -191,7 +193,8 @@ Now your  JMS Stock-List Demo Adapter is ready to be deployed in the Lightstream
 
 ## Deployment of Generator Component ##
 
-The instructions provided refer to the "Deployment_Generator" directory you can find in the "deploy.zip" file of [latest release](https://github.com/Weswit/Lightstreamer-example-StockList-adapter-jms/releases).
+The instructions provided refer to the "Deployment_Generator" directory you can find in the "deploy.zip" file of [latest release](https://github.com/Weswit/Lightstreamer-example-StockList-adapter-jms/releases).<br>
+
 1. Copy the contents of the Generator folder to any folder  in your file system and put "jms.jar" and "customjmsjar.jar" under its lib subfolder.
 2. Configure the launch script start_generator.bat (or start_generator.sh if you are under Unix) setting the GENERATOR_HOME (the path of the  folder), the JAVA_HOME (path of a JRE/JDK) and CONF_FILE (the path of a configuration file) variables.
 3. Create your configuration file. The included test.conf file shows all available parameters. Note that most parameters are required (you can omit msgPoolSize and recoveryPauseMillis).

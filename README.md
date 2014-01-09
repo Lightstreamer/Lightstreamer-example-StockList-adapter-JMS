@@ -24,8 +24,8 @@ The workflow of the application is the following:
 - The Browser retrieves the static web resources from a Web server (that could be Lightstreamer internal web server) and initiates a push session with Lightstreamer Server.
 - The Data Adapter, in its subscribe() method implementation, sends a message to a JMS queue in order to request the generator to start publishing the real-time data for a certain item.
 - The Data Generator reads a requests from the queue and publishes to a JMS topic the current values for the subscribed item (i.e. snapshot) and any subsequent updates.
-- The Data Adapter receives updates through the JMS topic and injects them into the Lightstreamer Kernel which in turn sends them to clients.
-<br>
+- The Data Adapter receives updates through the JMS topic and injects them into the Lightstreamer Kernel which in turn sends them to clients.<br>
+
 <i>NOTE: To keep the code simple and clear, the demo does not include advanced fail-over and recovery mechanisms in the communication between the Adapter and the Generator.</i>
 
 ## Dig the Code ##

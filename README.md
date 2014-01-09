@@ -26,7 +26,7 @@ The workflow of the application is the following:
 - The Data Adapter receives updates through the JMS topic and injects them into the Lightstreamer Kernel which in turn sends them to clients.
 <i>NOTE: To keep the code simple and clear, the demo does not include advanced fail-over and recovery mechanisms in the communication between the Adapter and the Generator.</i>
 
-## Dig the code ##
+## Dig the Code ##
 
 The "src" folder contais:
 - src_adapter: contains the source code for the JMS Stock-List Demo Data Adapter. It can be referred to as a basic example for the development of Data Adapters based on Java Message Service (JMS).
@@ -50,7 +50,7 @@ The project is comprised of source code and a deployment example.
 This demo needs a JMS infrastructure to run. You can choose whatever JMS middleware you prefer. In this example we will refer to TIBCO Enterprise Message Service(TM), JBossMQ, and JBoss Messaging.<br>
 Please download and install the JMS software, then: 
 
-###With TIBCO EMS ###
+### With TIBCO EMS ###
 1. Create one topic and one queue. Open the queues.conf and topics.conf located under EMSHome/bin/ and append a line containing respectively "stocksQueue" and "stocksTopic" (without apexes).
 2. Look for "jms.jar" and "tibjms.jar" from EMSHome/clients/java. You will need to copy them when deploying the Adapter and the Generator.
 

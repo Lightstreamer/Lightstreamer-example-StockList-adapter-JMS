@@ -58,6 +58,7 @@ Please download and install the JMS software, then:
 
 ### With JBossMQ ###
 1. Create one topic and one queue. Open the jbossmq-destinations-service.xml file located under /JBossHome/server/default/deploy/jms/ and add two mbean elements as shown below:
+
 ```xml
 <mbean code="org.jboss.mq.server.jmx.Topic" name="jboss.mq.destination:service=Topic,name=stocksTopic">
   <depends optional-attribute-name="DestinationManager">
@@ -74,6 +75,7 @@ Please download and install the JMS software, then:
 
 ### With JBoss Messaging ###
 1. Create one topic and one queue. Open the destinations-service.xml file located under /JBossHome/server/default/deploy/jboss-messaging.sar and add two mbean elements as shown below:
+
 ```xml
 <mbean code="org.jboss.jms.server.destination.TopicService"
 name="jboss.messaging.destination:service=Topic,name=stocksTopic"
@@ -90,6 +92,7 @@ jboss.messaging:service=ServerPeer</depends>
 <depends>jboss.messaging:service=PostOffice</depends>
 </mbean>
 ```
+
 2. Look for "javassist.jar", "jbossall-client.jar", "jboss-messaging-client.jar", "jnpserver.jar" and "trove.jar" from /JBossHome/client/. Look for "jboss-aop-jdk50.jar" from /JBossHome/server/default/deploy/jboss-aop-jdk50.deployer/. Download the JMS SDK from
 Sun's website and look for jms.jar in the lib folder. You will need to copy them when deploying the Adapter and the Generator.
 

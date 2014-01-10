@@ -5,8 +5,8 @@ This example shows how to integrate Lightstreamer Server with a JMS (Java Messag
 <b>For a more comprehensive solution, a separate product exists: the Lightstreamer JMS Gateway, which offers full-blown JMS APIs for JavaScript and other languages and does not require any server-side coding.</b><br>
 For any inquiry, please email info@lightstreamer.com.
 
-This application is the same as the [Lighstreamer - Basic Stock-List Demo - HTML Client](http://www.lightstreamer.com/demos#StockListDemo), with the difference that the market-data-feed simulator is an external process that communicates with the Lightstreamer Data Adapter through JMS.
-So, the goal of this demo is to show how a Lightstreamer Data Adapter can obtain data from an external source through JMS middleware. Both the Data Generator (feed process) and the Data Adapter source code are provided.
+This application is the same as the [Lighstreamer - Basic Stock-List Demo - HTML Client](https://github.com/Weswit/Lightstreamer-example-Stocklist-client-javascript#basic-stock-list-demo---html-client), with the difference that the market-data-feed simulator is an external process that communicates with the Lightstreamer Data Adapter through JMS.
+So, the goal of this demo is to show how a Lightstreamer Data Adapter can obtain data from an external source through JMS middleware. Both the Data Generator (feed process) and the Data Adapter source code are provided in this project.
 
 ## The Architecture ##
 
@@ -49,7 +49,7 @@ The project is comprised of source code and a deployment example.
 
 ## JMS Setup ##
 
-This demo needs a JMS infrastructure to run. You can choose whatever JMS middleware you prefer. In this example we will refer to TIBCO Enterprise Message Service(TM), JBossMQ, and JBoss Messaging.<br>
+This demo needs a JMS infrastructure to run. You can choose whatever JMS middleware you prefer. In this example we will refer to [TIBCO Enterprise Message Service(TM)](http://www.tibco.com/products/automation/messaging/enterprise-messaging/enterprise-message-service/default.jsp), [JBossMQ](https://community.jboss.org/wiki/JBossMQ), and [JBoss Messaging](https://community.jboss.org/wiki/JBossMessaging).<br>
 Please download and install the JMS software, then: 
 
 ### With TIBCO EMS ###
@@ -59,15 +59,15 @@ Please download and install the JMS software, then:
 ### With JBossMQ ###
 1. Create one topic and one queue. Open the jbossmq-destinations-service.xml file located under /JBossHome/server/default/deploy/jms/ and add two mbean elements as shown below:
 ```xml
-<mbean code="org.jboss.mq.server.jmx.Topic"
-name="jboss.mq.destination:service=Topic,name=stocksTopic">
-<depends optional-attribute-name="DestinationManager">
-jboss.mq:service=DestinationManager</depends>
+<mbean code="org.jboss.mq.server.jmx.Topic" name="jboss.mq.destination:service=Topic,name=stocksTopic">
+  <depends optional-attribute-name="DestinationManager">
+    jboss.mq:service=DestinationManager
+  </depends>
 </mbean>
-<mbean code="org.jboss.mq.server.jmx.Queue"
-name="jboss.mq.destination:service=Queue,name=stocksQueue">
-<depends optional-attribute-name="DestinationManager">
-jboss.mq:service=DestinationManager</depends>
+<mbean code="org.jboss.mq.server.jmx.Queue" name="jboss.mq.destination:service=Queue,name=stocksQueue">
+  <depends optional-attribute-name="DestinationManager">
+    jboss.mq:service=DestinationManager
+  </depends>
 </mbean>
 ```
 2. Look for "jms.jar" and "jbossmq-client.jar" from JBossHome/client/. You will need to copy them when deploying the Adapter and the Generator.

@@ -77,19 +77,15 @@ Please download and install the JMS software, then:
 1. Create one topic and one queue. Open the destinations-service.xml file located under /JBossHome/server/default/deploy/jboss-messaging.sar and add two mbean elements as shown below:
 
 ```xml
-<mbean code="org.jboss.jms.server.destination.TopicService"
-name="jboss.messaging.destination:service=Topic,name=stocksTopic"
-xmbean-dd="xmdesc/Topic-xmbean.xml">
-<depends optional-attribute-name="ServerPeer">
-jboss.messaging:service=ServerPeer</depends>
-<depends>jboss.messaging:service=PostOffice</depends>
+<mbean code="org.jboss.jms.server.destination.TopicService" name="jboss.messaging.destination:service=Topic,name=stocksTopic" xmbean-dd="xmdesc/Topic-xmbean.xml">
+  <depends optional-attribute-name="ServerPeer">
+    jboss.messaging:service=ServerPeer</depends>
+  <depends>jboss.messaging:service=PostOffice</depends>
 </mbean>
-<mbean code="org.jboss.jms.server.destination.QueueService"
-name="jboss.messaging.destination:service=Queue,name=stocksQueue"
-xmbean-dd="xmdesc/Queue-xmbean.xml">
-<depends optional-attribute-name="ServerPeer">
-jboss.messaging:service=ServerPeer</depends>
-<depends>jboss.messaging:service=PostOffice</depends>
+<mbean code="org.jboss.jms.server.destination.QueueService" name="jboss.messaging.destination:service=Queue,name=stocksQueue" xmbean-dd="xmdesc/Queue-xmbean.xml">
+  <depends optional-attribute-name="ServerPeer">
+    jboss.messaging:service=ServerPeer</depends>
+  <depends>jboss.messaging:service=PostOffice</depends>
 </mbean>
 ```
 

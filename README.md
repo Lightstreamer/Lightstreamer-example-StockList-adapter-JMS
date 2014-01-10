@@ -104,11 +104,11 @@ Otherwise follow these steps:
 ```sh
  >javac -source 1.7 -target 1.7 -nowarn -g -classpath lib/log4j-1.2.15.jar;lib/ls-adapter-interface.jar;jms.jar;customjmsjar.jar -sourcepath src/src_adapter;src/src_commons -d tmp_classes src/src_adapter/stocklist_jms_demo/adapters/StockQuotesJMSDataAdapter.java
  
- >jar cvf LS_StockListJMS_DataAdapter.jar -C tmp_classes src_adapter
+ >jar cvf LS_StockListJMS_DataAdapter.jar -C tmp_classes stocklist_jms_demo
  
- >javac -source 1.7 -target 1.7 -nowarn -g -classpath lib/log4j-1.2.15.jar;jms.jar;customjmsjar.jar -sourcepath src/src_standalone_generator -d tmp_classes src/src_standalone_generator/stocklist_jms_demo/feed_simulator/Generator.java
+ >javac -source 1.7 -target 1.7 -nowarn -g -classpath lib/log4j-1.2.15.jar;jms.jar;customjmsjar.jar -sourcepath src/src_standalone_generator;src/src_commons -d tmp_classes src/src_standalone_generator/stocklist_jms_demo/feed_simulator/Generator.java
  
- >jar cvf StockQuotesGeneratorJMS -C tmp_classes src_standalone_generator
+ >jar cvf StockQuotesGeneratorJMS -C tmp_classes stocklist_jms_demo/feed_simulator
 ```
 
 # Deploy #

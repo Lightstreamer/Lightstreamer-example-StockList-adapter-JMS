@@ -18,7 +18,7 @@ The orange components in the architecture diagram above are provided as part of 
 
 The sequence diagram below shows a typical interaction between the components of the architecture. Notice that the method and message names are purely symbolic and are not directly referred to the APIs used in the source code.
 
-![Sequence Diagram](flow.png)<br>
+![Sequence Diagram](flow_new.png)<br>
 
 The workflow of the application is the following:
 - The Browser retrieves the static web resources from a Web server (that could be Lightstreamer internal web server) and initiates a push session with Lightstreamer Server.

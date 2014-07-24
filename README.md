@@ -58,11 +58,11 @@ This demo needs a JMS infrastructure to run. You can choose whatever JMS middlew
 Please download and install the JMS software, then: 
 
 #### With TIBCO EMS
-1. Create one topic and one queue. Open the `queues.conf` and `topics.conf` located under EMSHome/bin/ and append a line containing respectively `stocksQueue` and `stocksTopic` (without apexes).
-2. Look for `jms.jar` and `tibjms.jar` from `EMSHome/clients/java`. You will need to copy them when deploying the Adapter and the Generator.
+* Create one topic and one queue. Open the `queues.conf` and `topics.conf` located under `EMSHome/bin/` and append a line containing respectively `stocksQueue` and `stocksTopic` (without apexes).
+* Look for `jms.jar` and `tibjms.jar` from `EMSHome/clients/java`. You will need to copy them when deploying the Adapter and the Generator.
 
 #### With JBossMQ
-1. Create one topic and one queue. Open the `jbossmq-destinations-service.xml` file located under `/JBossHome/server/default/deploy/jms/` and add two mbean elements as shown below:
+* Create one topic and one queue. Open the `jbossmq-destinations-service.xml` file located under `/JBossHome/server/default/deploy/jms/` and add two mbean elements as shown below:
 
 ```xml
 <mbean code="org.jboss.mq.server.jmx.Topic" name="jboss.mq.destination:service=Topic,name=stocksTopic">
@@ -76,10 +76,11 @@ Please download and install the JMS software, then:
   </depends>
 </mbean>
 ```
-2. Look for `jms.jar` and `jbossmq-client.jar` from `JBossHome/client/`. You will need to copy them when deploying the Adapter and the Generator.
+
+* Look for `jms.jar` and `jbossmq-client.jar` from `JBossHome/client/`. You will need to copy them when deploying the Adapter and the Generator.
 
 #### With JBoss Messaging
-1. Create one topic and one queue. Open the `destinations-service.xml` file located under `/JBossHome/server/default/deploy/jboss-messaging.sar` and add two mbean elements as shown below:
+* Create one topic and one queue. Open the `destinations-service.xml` file located under `/JBossHome/server/default/deploy/jboss-messaging.sar` and add two mbean elements as shown below:
 
 ```xml
 <mbean code="org.jboss.jms.server.destination.TopicService" name="jboss.messaging.destination:service=Topic,name=stocksTopic" xmbean-dd="xmdesc/Topic-xmbean.xml">
@@ -94,7 +95,7 @@ Please download and install the JMS software, then:
 </mbean>
 ```
 
-2. Look for `javassist.jar`, `jbossall-client.jar`, `jboss-messaging-client.jar`, `jnpserver.jar` and `trove.jar` from `/JBossHome/client/`. Look for `jboss-aop-jdk50.jar` from `/JBossHome/server/default/deploy/jboss-aop-jdk50.deployer/`. Download the JMS SDK from
+* Look for `javassist.jar`, `jbossall-client.jar`, `jboss-messaging-client.jar`, `jnpserver.jar` and `trove.jar` from `/JBossHome/client/`. Look for `jboss-aop-jdk50.jar` from `/JBossHome/server/default/deploy/jboss-aop-jdk50.deployer/`. Download the JMS SDK from
 Sun's website and look for `jms.jar` in the lib folder. You will need to copy them when deploying the Adapter and the Generator.
 
 <i>NOTE: from here on, this readme will refer to `tibjms.jar`, `jbossall-client.jar` or the set of jars needed for JBoss Messaging as `customjmsjar.jar`.</i>
@@ -114,13 +115,11 @@ If you want to install a version of this  Adapter in your local environment, fol
 
 ### Generator Setup
 
-
 * Download the `deploy.zip` file that you can find in the [deploy release](https://github.com/Weswit/Lightstreamer-example-StockList-adapter-JMS/releases) of this project and extract the `Deployment_Generator` folder.
 * Copy the contents of the `Generator` folder to any folder in your file system and put `jms.jar` and `customjmsjar.jar` under its `lib` subfolder.
 * Configure the launch script `start_generator.bat` (or `start_generator.sh` if you are under Unix) setting the GENERATOR_HOME (the path of the folder), the JAVA_HOME (path of a JRE/JDK) and CONF_FILE (the path of a configuration file) variables.
 * Create your configuration file. The `included test.conf` file shows all available parameters. Note that most parameters are required (you can omit msgPoolSize and recoveryPauseMillis).
 * Create a `log4j` configuration file (see `log.xml` as an Example). The category used by the Generator is SLGenerator.
-
 
 ### Start the client
 
@@ -149,9 +148,9 @@ The StockListDemo web front-end is now ready to be opened. The front-end will no
 
 ## Build
 
-To build your own version of `LS_StockListJMS_DataAdapter.jar` and/or `StockQuotesGeneratorJMS`, instead of using the one provided in the `deploy.zip` file from the Install section above, follow these steps:
+To build your own version of `LS_StockListJMS_DataAdapter.jar` and/or `StockQuotesGeneratorJMS`, instead of using the ones provided in the `deploy.zip` file from the Install section above, follow these steps:
 
-* Get the `ls-adapter-interface.jar` and log4j-1.2.15.jar files from the [latest Lightstreamer distribution](http://www.lightstreamer.com/download) and put these files into lib folder.
+* Get the `ls-adapter-interface.jar` and `log4j-1.2.15.jar` files from the [latest Lightstreamer distribution](http://www.lightstreamer.com/download) and put these files into lib folder.
 * Create the jars `StockQuotesGeneratorJMS.jar` and `LS_StockListJMS_DataAdapter.jar` with commands like these:
 ```sh
  >javac -source 1.7 -target 1.7 -nowarn -g -classpath lib/log4j-1.2.15.jar;lib/ls-adapter-interface.jar;jms.jar;customjmsjar.jar -sourcepath src/src_adapter;src/src_commons -d tmp_classes src/src_adapter/stocklist_jms_demo/adapters/StockQuotesJMSDataAdapter.java

@@ -181,4 +181,4 @@ To build your own version of `LS_StockListJMS_DataAdapter.jar` and/or `StockQuot
 
 ## Lightstreamer Compatibility Notes
 
-* Compatible with Lightstreamer SDK for Java Adapters since 5.1
+* Compatible with Lightstreamer SDK for Java Adapters version 5.1.x

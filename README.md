@@ -44,7 +44,7 @@ The `lib` folder should contain all the libraries needed for the Adapter recompi
 
 See the source code comments for further details.
 
-The Metadata Adapter functionalities are absolved by the `LiteralBasedProvider` in [Lightstreamer - Reusable Metadata Adapters - Java Adapter](https://github.com/Weswit/Lightstreamer-example-ReusableMetadata-adapter-java), a simple full implementation of a Metadata Adapter, made available in Lightstreamer distribution. 
+The Metadata Adapter functionalities are absolved by the `LiteralBasedProvider` in [Lightstreamer - Reusable Metadata Adapters - Java Adapter](https://github.com/Weswit/Lightstreamer-example-ReusableMetadata-adapter-java), a simple full implementation of a Metadata Adapter, already provided by Lightstreamer server. 
 
 The project is comprised of source code and a deployment example. 
 
@@ -109,7 +109,6 @@ If you want to install a version of this Adapter in your local environment, foll
 * Make sure that Lightstreamer Server is not running.
 * Copy the `StockQuotesJMSAdapter` directory and all of its files from this directory to the `adapters` subdirectory in your Lightstreamer Server installation home directory.
 * Copy the `jms.jar` and `customjmsjar.jar` files under `StockQuotesJMSAdapter/lib` (or under `Lightstreamer/shared/lib` if you think that those jars will be used by other Adapters, too).
-* Copy the `ls-generic-adapters.jar` file from the `lib` directory of the sibling "Reusable_MetadataAdapters" SDK example to the `shared/lib` subdirectory in your Lightstreamer Server installation home directory.
 * Open and configure `StockQuotesJMSAdapter/adapters.xml` as done with the Generator configuration file (except this is an xml file while the other is a property file). You can also configure the logging category of the Adapter in `StockQuotesJMSAdapter/adapters_log_conf.xml`.
 * Lightstreamer Server is now ready to be launched.
 
@@ -181,4 +180,5 @@ To build your own version of `LS_StockListJMS_DataAdapter.jar` and/or `StockQuot
 
 ## Lightstreamer Compatibility Notes
 
-* Compatible with Lightstreamer SDK for Java Adapters version 5.1.x
+* Compatible with Lightstreamer SDK for Java In-Process Adapters since 6.0
+- For a version of this example compatible with Lightstreamer SDK for Java Adapters version 5.1, please refer to [this tag](https://github.com/Weswit/Lightstreamer-example-StockList-adapter-JMS/tree/for_Lightstreamer_5.1).

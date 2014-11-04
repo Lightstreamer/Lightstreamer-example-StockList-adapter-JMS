@@ -38,10 +38,6 @@ The `src` folder contains:
 * `src_generator`: contains the source code for the Generator.
 * `src_commons`: contains the source code for classes used by both the Adapter and the Generator.
 
-The `lib` folder should contain all the libraries needed for the Adapter recompilation; this includes:
-* Lightstreamer java interface library (`ls-adapter-interface.jar` from the `/lib` folder of latest Lightstreamer distribution.);
-* log4j library, used for the Adapter's own logging (`log4j-1.2.15.jar` from the `/shared/lib` folder of latest Lightstreamer distribution).
-
 See the source code comments for further details.
 
 The Metadata Adapter functionalities are absolved by the `LiteralBasedProvider` in [Lightstreamer - Reusable Metadata Adapters - Java Adapter](https://github.com/Weswit/Lightstreamer-example-ReusableMetadata-adapter-java), a simple full implementation of a Metadata Adapter, already provided by Lightstreamer server. 
@@ -149,14 +145,15 @@ The StockListDemo web front-end is now ready to be opened. The front-end will no
 
 To build your own version of `LS_StockListJMS_DataAdapter.jar` and/or `StockQuotesGeneratorJMS`, instead of using the ones provided in the `deploy.zip` file from the Install section above, follow these steps:
 
-* Get the `ls-adapter-interface.jar` and `log4j-1.2.15.jar` files from the [latest Lightstreamer distribution](http://www.lightstreamer.com/download) and put these files into lib folder.
+* Get the `ls-adapter-interface.jar` file from the [latest Lightstreamer distribution](http://www.lightstreamer.com/download) and copy it into lib folder.
+* Get the `log4j-1.2.17.jar` file from [Apache log4j](https://logging.apache.org/log4j/1.2/) and copy it into the `lib` folder.
 * Create the jars `StockQuotesGeneratorJMS.jar` and `LS_StockListJMS_DataAdapter.jar` with commands like these:
 ```sh
- >javac -source 1.7 -target 1.7 -nowarn -g -classpath lib/log4j-1.2.15.jar;lib/ls-adapter-interface.jar;jms.jar;customjmsjar.jar -sourcepath src/src_adapter;src/src_commons -d tmp_classes src/src_adapter/stocklist_jms_demo/adapters/StockQuotesJMSDataAdapter.java
+ >javac -source 1.7 -target 1.7 -nowarn -g -classpath lib/log4j-1.2.17.jar;lib/ls-adapter-interface.jar;jms.jar;customjmsjar.jar -sourcepath src/src_adapter;src/src_commons -d tmp_classes src/src_adapter/stocklist_jms_demo/adapters/StockQuotesJMSDataAdapter.java
  
  >jar cvf LS_StockListJMS_DataAdapter.jar -C tmp_classes stocklist_jms_demo
  
- >javac -source 1.7 -target 1.7 -nowarn -g -classpath lib/log4j-1.2.15.jar;jms.jar;customjmsjar.jar -sourcepath src/src_standalone_generator;src/src_commons -d tmp_classes src/src_standalone_generator/stocklist_jms_demo/feed_simulator/Generator.java
+ >javac -source 1.7 -target 1.7 -nowarn -g -classpath lib/log4j-1.2.17.jar;jms.jar;customjmsjar.jar -sourcepath src/src_standalone_generator;src/src_commons -d tmp_classes src/src_standalone_generator/stocklist_jms_demo/feed_simulator/Generator.java
  
  >jar cvf StockQuotesGeneratorJMS -C tmp_classes stocklist_jms_demo/feed_simulator
 ```

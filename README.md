@@ -42,6 +42,73 @@ See the source code comments for further details.
 
 The Metadata Adapter functionalities are absolved by the `LiteralBasedProvider` in [Lightstreamer - Reusable Metadata Adapters - Java Adapter](https://github.com/Weswit/Lightstreamer-example-ReusableMetadata-adapter-java), a simple full implementation of a Metadata Adapter, already provided by Lightstreamer server. 
 
+### The Adapter Set Configuration
+This Adapter Set Name is configured and will be referenced by the clients as `STOCKLISTDEMO_JMS`.
+
+The `adapters.xml` file for this demo should look like:
+```xml   
+<?xml version="1.0"?>
+
+<adapters_conf id="STOCKLISTDEMO_JMS">
+
+
+    <metadata_provider>
+
+        <adapter_class>com.lightstreamer.adapters.metadata.LiteralBasedProvider</adapter_class>
+
+        <!-- Optional.
+             See LiteralBasedProvider javadoc. -->
+        <param name="item_family_1">item.*</param>
+        <param name="modes_for_item_family_1">MERGE</param>
+
+    </metadata_provider>
+
+
+    <data_provider name="QUOTE_ADAPTER">
+
+        <adapter_class>stocklist_jms_demo.adapters.StockQuotesJMSDataAdapter</adapter_class>
+
+        <!-- Optional parameters managed by StockQuotesJMSDataAdapter -->
+
+        <param name="msgPoolSize">15</param>
+        <param name="recoveryPauseMillis">2000</param>
+
+        <!-- Configuration file for the Adapter's own logging.
+             Logging is managed through log4j. -->
+        <param name="log_config">adapters_log_conf.xml</param>
+        <param name="log_config_refresh_seconds">10</param>
+
+        <!-- JBoss Messaging example configuration -->
+
+        <param name="jmsUrl">jnp://localhost:1099</param>
+        <param name="initialContextFactory">org.jnp.interfaces.NamingContextFactory</param>
+        <param name="topicConnectionFactory">ConnectionFactory</param>
+        <param name="queueConnectionFactory">ConnectionFactory</param>
+        <param name="topicName">topic/stocksTopic</param>
+        <param name="queueName">queue/stocksQueue</param>
+
+        <!--EMS example configuration -->
+        <!--
+        <param name="jmsUrl">tcp://localhost:7222</param>
+        <param name="initialContextFactory">com.tibco.tibjms.naming.TibjmsInitialContextFactory</param>
+        <param name="topicConnectionFactory">TopicConnectionFactory</param>
+        <param name="queueConnectionFactory">QueueConnectionFactory</param>
+        <param name="topicName">stocksTopic</param>
+        <param name="queueName">stocksQueue</param>
+        -->
+
+    </data_provider>
+
+
+</adapters_conf>
+```
+
+<i>NOTE: not all configuration options of an Adapter Set are exposed by the file suggested above. 
+You can easily expand your configurations using the generic template, `DOCS-SDKs/sdk_adapter_java_inprocess/doc/adapter_conf_template/adapters.xml`, as a reference.</i><br>
+<br>
+Please refer [here](http://www.lightstreamer.com/docs/base/General%20Concepts.pdf) for more details about Lightstreamer Adapters.
+
+
 The project is comprised of source code and a deployment example. 
 
 <!-- END DESCRIPTION lightstreamer-example-stocklist-adapter-jms -->

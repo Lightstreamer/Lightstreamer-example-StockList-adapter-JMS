@@ -8,7 +8,7 @@ This example shows how to integrate Lightstreamer Server with a <b>JMS (Java Mes
 
 ## Details
 
-This application is the same as the [Lighstreamer - Basic Stock-List Demo - HTML Client](https://github.com/Weswit/Lightstreamer-example-Stocklist-client-javascript#basic-stock-list-demo---html-client), with the difference that the market-data-feed simulator is an external process that communicates with the Lightstreamer Data Adapter through JMS.
+This application is the same as the [Lighstreamer - Basic Stock-List Demo - HTML Client](https://github.com/Lightstreamer/Lightstreamer-example-Stocklist-client-javascript#basic-stock-list-demo---html-client), with the difference that the market-data-feed simulator is an external process that communicates with the Lightstreamer Data Adapter through JMS.
 So, the goal of this demo is to show how a Lightstreamer Data Adapter can obtain data from an external source through JMS middleware. Both the Data Generator (feed process) and the Data Adapter source code are provided in this project.
 
 ### The Architecture
@@ -40,7 +40,7 @@ The `src` folder contains:
 
 See the source code comments for further details.
 
-The Metadata Adapter functionalities are absolved by the `LiteralBasedProvider` in [Lightstreamer - Reusable Metadata Adapters - Java Adapter](https://github.com/Weswit/Lightstreamer-example-ReusableMetadata-adapter-java), a simple full implementation of a Metadata Adapter, already provided by Lightstreamer server. 
+The Metadata Adapter functionalities are absolved by the `LiteralBasedProvider` in [Lightstreamer - Reusable Metadata Adapters - Java Adapter](https://github.com/Lightstreamer/Lightstreamer-example-ReusableMetadata-adapter-java), a simple full implementation of a Metadata Adapter, already provided by Lightstreamer server. 
 
 ### The Adapter Set Configuration
 This Adapter Set Name is configured and will be referenced by the clients as `STOCKLISTDEMO_JMS`.
@@ -167,7 +167,7 @@ Sun's website and look for `jms.jar` in the lib folder. You will need to copy th
 
 If you want to install a version of this Adapter in your local environment, follow these steps:
 
-* Download the `deploy.zip` file that you can find in the [deploy release](https://github.com/Weswit/Lightstreamer-example-StockList-adapter-JMS/releases) of this project and extract the `Deployment_LS/StockQuotesJMSAdapter` folder.
+* Download the `deploy.zip` file that you can find in the [deploy release](https://github.com/Lightstreamer/Lightstreamer-example-StockList-adapter-JMS/releases) of this project and extract the `Deployment_LS/StockQuotesJMSAdapter` folder.
 * Make sure you have installed Lightstreamer Server, as explained in the `GETTING_STARTED.TXT` file in the installation home directory.
 * Make sure that Lightstreamer Server is not running.
 * Copy the `StockQuotesJMSAdapter` directory and all of its files from this directory to the `adapters` subdirectory in your Lightstreamer Server installation home directory.
@@ -177,7 +177,7 @@ If you want to install a version of this Adapter in your local environment, foll
 
 ### Generator Setup
 
-* Download the `deploy.zip` file that you can find in the [deploy release](https://github.com/Weswit/Lightstreamer-example-StockList-adapter-JMS/releases) of this project and extract the `Deployment_Generator` folder.
+* Download the `deploy.zip` file that you can find in the [deploy release](https://github.com/Lightstreamer/Lightstreamer-example-StockList-adapter-JMS/releases) of this project and extract the `Deployment_Generator` folder.
 * Copy the contents of the `Generator` folder to any folder in your file system and put `jms.jar` and `customjmsjar.jar` under its `lib` subfolder.
 * Configure the launch script `start_generator.bat` (or `start_generator.sh` if you are under Unix) setting the GENERATOR_HOME (the path of the folder), the JAVA_HOME (path of a JRE/JDK) and CONF_FILE (the path of a configuration file) variables.
 * Create your configuration file. The `included test.conf` file shows all available parameters. Note that most parameters are required (you can omit msgPoolSize and recoveryPauseMillis).
@@ -185,7 +185,7 @@ If you want to install a version of this Adapter in your local environment, foll
 
 ### Start the client
 
-Please test your Adapter with one of the clients in this [list](https://github.com/Weswit/Lightstreamer-example-StockList-adapter-jms#clients-using-this-adapter).<br>
+Please test your Adapter with one of the clients in this [list](https://github.com/Lightstreamer/Lightstreamer-example-StockList-adapter-jms#clients-using-this-adapter).<br>
 
 To make the StockListDemo front-end pages consult the newly installed Adapter Set, you need to modify the front-end pages and set the required Adapter Set name to STOCKLISTDEMO_JMS when creating the LightstreamerClient instance. So a line like this:
 ```js
@@ -231,18 +231,18 @@ To build your own version of `LS_StockListJMS_DataAdapter.jar` and/or `StockQuot
 
 <!-- START RELATED_ENTRIES -->
 
-* [Lightstreamer - Stock-List Demos - HTML Clients](https://github.com/Weswit/Lightstreamer-example-Stocklist-client-javascript)
+* [Lightstreamer - Stock-List Demos - HTML Clients](https://github.com/Lightstreamer/Lightstreamer-example-Stocklist-client-javascript)
 
 <!-- END RELATED_ENTRIES -->
 ### Related Projects
-* [Lightstreamer - Reusable Metadata Adapters - Java Adapter](https://github.com/Weswit/Lightstreamer-example-ReusableMetadata-adapter-java)
-* [Lightstreamer - Portfolio Demo - Java Adapter](https://github.com/Weswit/Lightstreamer-example-Portfolio-adapter-java)
+* [Lightstreamer - Reusable Metadata Adapters - Java Adapter](https://github.com/Lightstreamer/Lightstreamer-example-ReusableMetadata-adapter-java)
+* [Lightstreamer - Portfolio Demo - Java Adapter](https://github.com/Lightstreamer/Lightstreamer-example-Portfolio-adapter-java)
 
 ### The Same Demo Adapter With Other Technologies
-* [Lightstreamer - Stock-List Demo - Java Adapter](https://github.com/Weswit/Lightstreamer-example-StockList-adapter-java)
-* [Lightstreamer - Stock-List Demo - .NET Adapter](https://github.com/Weswit/Lightstreamer-example-StockList-adapter-dotnet)
+* [Lightstreamer - Stock-List Demo - Java Adapter](https://github.com/Lightstreamer/Lightstreamer-example-StockList-adapter-java)
+* [Lightstreamer - Stock-List Demo - .NET Adapter](https://github.com/Lightstreamer/Lightstreamer-example-StockList-adapter-dotnet)
 
 ## Lightstreamer Compatibility Notes
 
 * Compatible with Lightstreamer SDK for Java In-Process Adapters since 6.0
-- For a version of this example compatible with Lightstreamer SDK for Java Adapters version 5.1, please refer to [this tag](https://github.com/Weswit/Lightstreamer-example-StockList-adapter-JMS/tree/for_Lightstreamer_5.1).
+- For a version of this example compatible with Lightstreamer SDK for Java Adapters version 5.1, please refer to [this tag](https://github.com/Lightstreamer/Lightstreamer-example-StockList-adapter-JMS/tree/for_Lightstreamer_5.1).

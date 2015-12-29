@@ -3,8 +3,7 @@
 <!-- START DESCRIPTION lightstreamer-example-stocklist-adapter-jms -->
 
 This example shows how to integrate Lightstreamer Server with a <b>JMS (Java Message Service)</b> data feed.<br>
-<b>For a more comprehensive solution, a separate product exists: the Lightstreamer JMS Gateway, which offers full-blown JMS APIs for JavaScript and other languages and does not require any server-side coding.</b><br>
-<i>For any inquiry, please email info@lightstreamer.com.</i>
+<b>For a more comprehensive solution, a separate product exists: [Lightstreamer JMS Extender](http://www.lightstreamer.com/ls-jms-features), which offers full-blown JMS APIs for JavaScript and other languages and does not require any server-side coding.</b><br>
 
 ## Details
 

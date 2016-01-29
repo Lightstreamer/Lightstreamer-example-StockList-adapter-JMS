@@ -1,5 +1,4 @@
 # Lightstreamer - Stock-List Demo - Java (JMS) Adapter
-# Lightstreamer - Stock-List Demo - Java (JMS) Adapter
 
 <!-- START DESCRIPTION lightstreamer-example-stocklist-adapter-jms -->
 

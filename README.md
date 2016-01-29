@@ -1,4 +1,5 @@
 # Lightstreamer - Stock-List Demo - Java (JMS) Adapter
+# Lightstreamer - Stock-List Demo - Java (JMS) Adapter
 
 <!-- START DESCRIPTION lightstreamer-example-stocklist-adapter-jms -->
 
@@ -211,17 +212,18 @@ The StockListDemo web front-end is now ready to be opened. The front-end will no
 
 To build your own version of `LS_StockListJMS_DataAdapter.jar` and/or `StockQuotesGeneratorJMS`, instead of using the ones provided in the `deploy.zip` file from the Install section above, follow these steps:
 
-* Get the `ls-adapter-interface.jar` file from the [latest Lightstreamer distribution](http://www.lightstreamer.com/download) and copy it into lib folder.
+* Get the `ls-adapter-interface.jar` file from the [latest Lightstreamer distribution](http://www.lightstreamer.com/download) and copy it into `lib` folder.
 * Get the `log4j-1.2.17.jar` file from [Apache log4j](https://logging.apache.org/log4j/1.2/) and copy it into the `lib` folder.
+* Get `jms.jar` and `customjmsjar.jar` files from your JMS middleware and copy them into `lib` folder.
 * Create the jars `StockQuotesGeneratorJMS.jar` and `LS_StockListJMS_DataAdapter.jar` with commands like these:
 ```sh
- >javac -source 1.7 -target 1.7 -nowarn -g -classpath lib/log4j-1.2.17.jar;lib/ls-adapter-interface.jar;jms.jar;customjmsjar.jar -sourcepath src/src_adapter;src/src_commons -d tmp_classes src/src_adapter/stocklist_jms_demo/adapters/StockQuotesJMSDataAdapter.java
+ >javac -source 1.7 -target 1.7 -nowarn -g -classpath lib/log4j-1.2.17.jar;lib/ls-adapter-interface.jar;lib/jms.jar;lib/ustomjmsjar.jar -sourcepath src/src_adapter;src/src_commons -d tmp_classes src/src_adapter/stocklist_jms_demo/adapters/StockQuotesJMSDataAdapter.java
  
  >jar cvf LS_StockListJMS_DataAdapter.jar -C tmp_classes stocklist_jms_demo
  
- >javac -source 1.7 -target 1.7 -nowarn -g -classpath lib/log4j-1.2.17.jar;jms.jar;customjmsjar.jar -sourcepath src/src_standalone_generator;src/src_commons -d tmp_classes src/src_standalone_generator/stocklist_jms_demo/feed_simulator/Generator.java
+ >javac -source 1.7 -target 1.7 -nowarn -g -classpath lib/log4j-1.2.17.jar;lib/jms.jar;lib/customjmsjar.jar -sourcepath src/src_standalone_generator;src/src_commons -d tmp_classes src/src_standalone_generator/stocklist_jms_demo/feed_simulator/Generator.java
  
- >jar cvf StockQuotesGeneratorJMS -C tmp_classes stocklist_jms_demo/feed_simulator
+ >jar cvf StockQuotesGeneratorJMS.jar -C tmp_classes stocklist_jms_demo/feed_simulator
 ```
 
 ## See Also

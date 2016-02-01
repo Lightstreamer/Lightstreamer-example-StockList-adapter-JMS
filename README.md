@@ -216,13 +216,11 @@ To build your own version of `LS_StockListJMS_DataAdapter.jar` and/or `StockQuot
 * Get `jms.jar` and `customjmsjar.jar` files from your JMS middleware and copy them into `lib` folder.
 * Create the jars `StockQuotesGeneratorJMS.jar` and `LS_StockListJMS_DataAdapter.jar` with commands like these:
 ```sh
- >javac -source 1.7 -target 1.7 -nowarn -g -classpath lib/log4j-1.2.17.jar;lib/ls-adapter-interface.jar;lib/jms.jar;lib/ustomjmsjar.jar -sourcepath src/src_adapter;src/src_commons -d tmp_classes src/src_adapter/stocklist_jms_demo/adapters/StockQuotesJMSDataAdapter.java
- 
- >jar cvf LS_StockListJMS_DataAdapter.jar -C tmp_classes stocklist_jms_demo
- 
- >javac -source 1.7 -target 1.7 -nowarn -g -classpath lib/log4j-1.2.17.jar;lib/jms.jar;lib/customjmsjar.jar -sourcepath src/src_standalone_generator;src/src_commons -d tmp_classes src/src_standalone_generator/stocklist_jms_demo/feed_simulator/Generator.java
- 
- >jar cvf StockQuotesGeneratorJMS.jar -C tmp_classes stocklist_jms_demo/feed_simulator
+ > mkdir tmp_classes
+ > javac -source 1.7 -target 1.7 -nowarn -g -classpath lib/log4j-1.2.17.jar;lib/ls-adapter-interface.jar;lib/jms.jar;lib/ustomjmsjar.jar -sourcepath src/src_adapter;src/src_commons -d tmp_classes src/src_adapter/stocklist_jms_demo/adapters/StockQuotesJMSDataAdapter.java
+ > jar cvf LS_StockListJMS_DataAdapter.jar -C tmp_classes stocklist_jms_demo
+ > javac -source 1.7 -target 1.7 -nowarn -g -classpath lib/log4j-1.2.17.jar;lib/jms.jar;lib/customjmsjar.jar -sourcepath src/src_standalone_generator;src/src_commons -d tmp_classes src/src_standalone_generator/stocklist_jms_demo/feed_simulator/Generator.java
+ > jar cvf StockQuotesGeneratorJMS.jar -C tmp_classes stocklist_jms_demo/feed_simulator
 ```
 
 ## See Also

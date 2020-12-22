@@ -124,7 +124,7 @@ If you want to install a version of this Adapter in your local environment, foll
 * Copy the `StockQuotesJMSAdapter` directory and all of its files from this directory to the `adapters` subdirectory in your Lightstreamer Server installation home directory.
 * [Optional] Customize logging settings in log4j configuration file `StockQuotesJMSAdapter/classes/log4j2.xml`.
 * Open and configure `StockQuotesJMSAdapter/adapters.xml` as done with the Generator configuration file (except this is an xml file while the other is a property file).
-* Consider to add the env property "-Dorg.apache.activemq.SERIALIZABLE_PACKAGES=*" to the Lightstreamer Server launch scipt.
+* Consider to add the env property "-Dorg.apache.activemq.SERIALIZABLE_PACKAGES=*" to the Lightstreamer Server launch script.
 * Lightstreamer Server is now ready to be launched.
 
 ### Generator Setup
@@ -169,7 +169,19 @@ For the sake of simplicity only the Maven case is detailed here.
 
 You can easily build and run this application using Maven through the pom.xml file located in the root folder of this project. As an alternative, you can use an alternative build tool (e.g. Gradle, Ivy, etc.) by converting the provided pom.xml file.
 
-Assuming Maven is installed and available in your path you can build the demo by running
+Assuming Maven is installed and available in your path, and added the dependency to the chosen jms to the pom.xml, in the case of ActiveMQ this new entry will be needed in the dependencies:  
+
+```xml
+<!-- https://mvnrepository.com/artifact/org.apache.activemq/activemq-client -->
+<dependency>
+    <groupId>org.apache.activemq</groupId>
+    <artifactId>activemq-client</artifactId>
+    <version>5.16.0</version>
+</dependency>
+```
+
+you can build the demo by running
+
 ```sh 
  mvn install dependency:copy-dependencies 
 ```

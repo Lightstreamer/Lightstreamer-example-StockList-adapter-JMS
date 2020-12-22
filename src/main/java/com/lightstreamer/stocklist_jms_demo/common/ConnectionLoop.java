@@ -22,7 +22,7 @@ package stocklist_jms_demo.common;
 import javax.jms.JMSException;
 import javax.naming.NamingException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 //loop until connected to JMS
 public abstract class ConnectionLoop extends Thread {
@@ -45,16 +45,27 @@ public abstract class ConnectionLoop extends Thread {
     public void run() {
 
         boolean loop = false;
+
+        logger.info("Start Connection loop ...");
+
         do {
             if (this.localPhase != phase) {
                 return;
             }
+
+            logger.debug(" ... 1 ... ");
+
             loop = false;
             //reset JMSHandler
             jmsHandler.reset();
+            
+            logger.debug(" ... 2 ... ");
+            
             try {
                 //call the concrete method
                 connectionCall();
+
+                logger.debug(" ... 3 ... ");
 
             } catch(JMSException je) {
                 //JMS not yet available
@@ -67,6 +78,9 @@ public abstract class ConnectionLoop extends Thread {
                 //that the wrong name will subsequently become valid
                 logger.error("NamingException: " + ne.getMessage(), ne);
                 loop = true;
+            } catch (Exception e) {
+                logger.error("Error: " + e.getMessage());
+                loop = true;
             }
 
             if (loop && this.localPhase == phase) {
@@ -76,6 +90,9 @@ public abstract class ConnectionLoop extends Thread {
                 }
             } else if (this.localPhase == phase) {
                 //handle connection/reconnection
+
+            logger.info(" ... ok connection.");
+
                 onConnectionCall();
             } else {
                 //another thread started

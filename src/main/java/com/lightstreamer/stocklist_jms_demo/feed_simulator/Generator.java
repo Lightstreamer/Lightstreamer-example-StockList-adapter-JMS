@@ -30,8 +30,8 @@ import javax.jms.Message;
 import javax.jms.TextMessage;
 import javax.naming.NamingException;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.xml.DOMConfigurator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import stocklist_jms_demo.common.ConnectionLoop;
 import stocklist_jms_demo.common.ExtendedMessageListener;
@@ -378,6 +378,7 @@ public class Generator implements ExtendedMessageListener, ExternalFeedListener 
     }
 
     private static void configureLogger(String logConf) {
+        /*
         if (logConf != null) {
             try {
                 DOMConfigurator.configureAndWatch(logConf, 10000);
@@ -391,6 +392,8 @@ public class Generator implements ExtendedMessageListener, ExternalFeedListener 
             System.out.println(noLog);
             throw new IllegalStateException(noLog);
         }
+        */
+        logger = LogManager.getLogger("SLGenerator");
     }
 
 

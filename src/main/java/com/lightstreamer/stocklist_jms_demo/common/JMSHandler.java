@@ -42,7 +42,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This object can handle:
@@ -109,11 +109,15 @@ public class JMSHandler {
      * Initiates the InitialContext.
      */
     private synchronized void initJMS() throws JMSException, NamingException{
+
+        logger.debug(" ... 6 ... " + JMSReady);
+
         if (JMSReady) {
             //InitialContext is already OK, exit
             return;
         }
 
+        logger.debug(" ... 7 ... ");
         //Prepare a Properties object to be passed to the InitialContext
         //constructor giving the InitialContextFactory name and
         //the JMS server url
@@ -121,8 +125,15 @@ public class JMSHandler {
         properties.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY, this.initialContextFactory);
         properties.put(javax.naming.Context.PROVIDER_URL, this.providerURL);
 
+        logger.debug(" ... 8 ... ");
+
         //create the InitialContext
-        this.jndiContext = new InitialContext(properties);
+        try {
+            this.jndiContext = new InitialContext(properties);
+        } catch (Exception e) {
+            logger.debug(" Initial context error: " + e.getMessage());
+        }
+        
         logger.info("JNDI Context[" + jndiContext.getEnvironment() + "]...");
 
         //InitialContext is now ready
@@ -318,7 +329,12 @@ public class JMSHandler {
     public synchronized void initTopicPublisher(int msgPoolSize) throws JMSException, NamingException {
         //first of all we have to inititiate the TopicSession
         //(without this we can't instantiate a TopicPublisher)
+
+        logger.debug(" ... 4 ...");
+
         initTopicSession();
+
+        logger.debug(" ... 5 ...");
 
         //get the TopicPublisher from our TopicSession
         this.topicPublisher = topicSession.createPublisher(topic);

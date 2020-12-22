@@ -30,8 +30,8 @@ import javax.jms.Message;
 import javax.jms.ObjectMessage;
 import javax.naming.NamingException;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.xml.DOMConfigurator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import stocklist_jms_demo.common.ConnectionLoop;
 import stocklist_jms_demo.common.ExtendedMessageListener;
@@ -129,7 +129,7 @@ public class StockQuotesJMSDataAdapter implements SmartDataProvider, ExtendedMes
      * Called by Lightstreamer Kernel on start.
      */
     public void init(Map params, File configDir) throws DataProviderException {
-        //load log configuration
+        /*
         String logConfig = (String) params.get("log_config");
         if (logConfig != null) {
             File logConfigFile = new File(configDir, logConfig);
@@ -139,9 +139,9 @@ public class StockQuotesJMSDataAdapter implements SmartDataProvider, ExtendedMes
             } else {
                 DOMConfigurator.configure(logConfigFile.getAbsolutePath());
             }
-        }
+        }*/
         //get the logger
-        logger = Logger.getLogger("LS_demos_Logger.StockQuotesJMS");
+        logger = LogManager.getLogger("LS_demos_Logger.StockQuotesJMS");
 
         //load JMS connections parameters
         String providerURL = getParam(params,"jmsUrl",true,null);

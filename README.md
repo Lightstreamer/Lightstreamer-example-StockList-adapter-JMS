@@ -161,7 +161,7 @@ The StockListDemo web front-end is now ready to be opened. The front-end will no
 
 ## Build
 
-To build your own version of `example-StockList-JMS-adapter-java-0.0.1-SNAPSHOT.jar`, instead of using the ones provided in the `deploy.zip` file from the Install section above, you have two options:
+To build your own version of `example-StockList-JMS-adapter-java-x.y.z.jar`, instead of using the ones provided in the `deploy.zip` file from the Install section above, you have two options:
 either use [Maven](https://maven.apache.org/) (or other build tools) to take care of dependencies and building (recommended) or gather the necessary jars yourself and build it manually.
 For the sake of simplicity only the Maven case is detailed here.
 

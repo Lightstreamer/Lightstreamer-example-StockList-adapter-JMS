@@ -47,7 +47,7 @@
     <repository>
       <id>Datanucleus</id>
       <name>Datanucleus Repository</name>
-      <url>http://www.datanucleus.org/downloads/maven2/</url>
+      <url>https://www.datanucleus.org/downloads/maven2/</url>
     </repository>
   </repositories>
   

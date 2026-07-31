@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package stocklist_jms_demo.feed_simulator;
+package com.lightstreamer.stocklist_jms_demo.feed_simulator;
 
 import java.util.HashMap;
 

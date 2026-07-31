@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package stocklist_jms_demo.feed_simulator;
+package com.lightstreamer.stocklist_jms_demo.feed_simulator;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

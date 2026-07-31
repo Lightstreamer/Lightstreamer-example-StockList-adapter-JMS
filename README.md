@@ -39,7 +39,7 @@ The `src` folder contains:
 
 See the source code comments for further details.
 
-The Metadata Adapter functionalities are absolved by the `LiteralBasedProvider` in [Lightstreamer Java In-Process Adapter SDK](https://github.com/Lightstreamer/Lightstreamer-lib-adapter-java-inprocess#literalbasedprovider-metadata-adapter), a simple full implementation of a Metadata Adapter, already provided by Lightstreamer server. 
+The Metadata Adapter functionalities are absolved by the `PermissiveMetadataAdapter` included in this project, a basic implementation of a Metadata Adapter suitable only for demos.
 
 ### The Adapter Set Configuration
 This Adapter Set Name is configured and will be referenced by the clients as `STOCKLISTDEMO_JMS`.
@@ -53,19 +53,17 @@ The `adapters.xml` file for this demo should look like:
 
     <metadata_provider>
 
-        <adapter_class>com.lightstreamer.adapters.metadata.LiteralBasedProvider</adapter_class>
+        <adapter_class>com.lightstreamer.stocklist_jms_demo.adapters.PermissiveMetadataAdapter</adapter_class>
 
-        <!-- Optional.
-             See LiteralBasedProvider javadoc. -->
-        <param name="item_family_1">item.*</param>
-        <param name="modes_for_item_family_1">MERGE</param>
+        <!-- Ensure compatibility with old versions of the demo Clients. -->
+        <support_LiteralBased_subscriptions>Y</support_LiteralBased_subscriptions>
 
     </metadata_provider>
 
 
     <data_provider name="QUOTE_ADAPTER">
 
-        <adapter_class>stocklist_jms_demo.adapters.StockQuotesJMSDataAdapter</adapter_class>
+        <adapter_class>com.lightstreamer.stocklist_jms_demo.adapters.StockQuotesJMSDataAdapter</adapter_class>
 
         <!-- Optional parameters managed by StockQuotesJMSDataAdapter -->
 
@@ -193,7 +191,6 @@ you can build the demo by running
 * [Lightstreamer - Stock-List Demos - HTML Clients](https://github.com/Lightstreamer/Lightstreamer-example-Stocklist-client-javascript)
 
 ### Related Projects
-* [LiteralBasedProvider Metadata Adapter](https://github.com/Lightstreamer/Lightstreamer-lib-adapter-java-inprocess#literalbasedprovider-metadata-adapter)
 * [Lightstreamer - Portfolio Demo - Java Adapter](https://github.com/Lightstreamer/Lightstreamer-example-Portfolio-adapter-java)
 
 ### The Same Demo Adapter With Other Technologies
@@ -202,6 +199,7 @@ you can build the demo by running
 
 ## Lightstreamer Compatibility Notes
 
-* Compatible with Lightstreamer SDK for Java In-Process Adapters since 7.3.
+- Compatible with Lightstreamer SDK for Java In-Process Adapters since version 9.0.
+- For a version of this example compatible with Lightstreamer SDK for Java In-Process Adapters versions 8.x, please refer to [this tag](https://github.com/Lightstreamer/Lightstreamer-example-StockList-adapter-JMS/tree/XXXXXXXXXXXXXXXXXXXXX).
 * For a version of this example compatible with Lightstreamer SDK for Java In-Process Adapters 6.0, please refer to [this tag](https://github.com/Lightstreamer/Lightstreamer-example-StockList-adapter-JMS/tree/pre_mvn).
 * For a version of this example compatible with Lightstreamer SDK for Java In-Process Adapters 5.1, please refer to [this tag](https://github.com/Lightstreamer/Lightstreamer-example-StockList-adapter-JMS/tree/for_Lightstreamer_5.1).

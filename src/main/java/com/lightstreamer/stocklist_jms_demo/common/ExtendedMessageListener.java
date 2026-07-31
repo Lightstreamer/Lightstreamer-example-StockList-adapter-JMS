@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package stocklist_jms_demo.common;
+package com.lightstreamer.stocklist_jms_demo.common;
 
 import javax.jms.ExceptionListener;
 import javax.jms.MessageListener;

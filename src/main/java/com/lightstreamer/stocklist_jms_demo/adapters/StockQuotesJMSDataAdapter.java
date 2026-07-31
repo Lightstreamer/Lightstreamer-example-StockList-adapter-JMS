@@ -15,12 +15,14 @@
  * limitations under the License.
  *
  */
-package stocklist_jms_demo.adapters;
+package com.lightstreamer.stocklist_jms_demo.adapters;
 
 import java.io.File;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -33,20 +35,21 @@ import javax.naming.NamingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import stocklist_jms_demo.common.ConnectionLoop;
-import stocklist_jms_demo.common.ExtendedMessageListener;
-import stocklist_jms_demo.common.FeedMessage;
-import stocklist_jms_demo.common.HeartbeatMessage;
-import stocklist_jms_demo.common.JMSHandler;
-import stocklist_jms_demo.common.SubscribedItemAttributes;
+import com.lightstreamer.stocklist_jms_demo.common.ConnectionLoop;
+import com.lightstreamer.stocklist_jms_demo.common.ExtendedMessageListener;
+import com.lightstreamer.stocklist_jms_demo.common.FeedMessage;
+import com.lightstreamer.stocklist_jms_demo.common.HeartbeatMessage;
+import com.lightstreamer.stocklist_jms_demo.common.JMSHandler;
+import com.lightstreamer.stocklist_jms_demo.common.SubscribedItemAttributes;
 
-import com.lightstreamer.interfaces.data.DataProviderException;
-import com.lightstreamer.interfaces.data.FailureException;
-import com.lightstreamer.interfaces.data.ItemEventListener;
-import com.lightstreamer.interfaces.data.SmartDataProvider;
-import com.lightstreamer.interfaces.data.SubscriptionException;
+import com.lightstreamer.adapter.common.InitException;
+import com.lightstreamer.adapter.common.Mode;
+import com.lightstreamer.adapter.data.DataAdapter;
+import com.lightstreamer.adapter.data.ItemListener;
+import com.lightstreamer.adapter.data.ItemManager;
+import com.lightstreamer.adapter.data.SubscriptionException;
 
-public class StockQuotesJMSDataAdapter implements SmartDataProvider, ExtendedMessageListener {
+public class StockQuotesJMSDataAdapter implements DataAdapter, ExtendedMessageListener {
 
     /**
      * Private logger; a specific "LS_demos_Logger.StockQuotesJMS" category
@@ -56,12 +59,9 @@ public class StockQuotesJMSDataAdapter implements SmartDataProvider, ExtendedMes
 
     private JMSHandler jmsHandler;
 
-    private ItemEventListener listener;
-
     private ConcurrentHashMap<String,SubscribedItemAttributes> subscribedItems = new ConcurrentHashMap<String,SubscribedItemAttributes>();
 
     private volatile int nextHandleId = 1;
-    private ConcurrentHashMap<String,Object> handles = new ConcurrentHashMap<String,Object>();
 
     private int msgPoolSize;
     private int recoveryPause;
@@ -97,15 +97,15 @@ public class StockQuotesJMSDataAdapter implements SmartDataProvider, ExtendedMes
      * This map will update every subscribed item setting
      * the item_status field to inactive.
      */
-    private static HashMap<String,String> inactiveMap = new HashMap<String,String>();
+    private final HashMap<String,String> inactiveMap = new HashMap<String,String>();
 
     /**
      * This map will update every subscribed item setting
      * the item_status field to inactive.
      * This map is used in case of snapshot updates.
      */
-    private static HashMap<String,String> completeInactiveMap = new HashMap<String,String>();
-    static {
+    private final HashMap<String,String> completeInactiveMap = new HashMap<String,String>();
+    {
         inactiveMap.put("item_status","inactive");
 
         completeInactiveMap.put("stock_name","-");
@@ -124,11 +124,12 @@ public class StockQuotesJMSDataAdapter implements SmartDataProvider, ExtendedMes
     }
 
 
-    ////////////////// DataProvider
+    ////////////////// DataAdapter
+
     /**
      * Called by Lightstreamer Kernel on start.
      */
-    public void init(Map params, File configDir) throws DataProviderException {
+    public void init(Map params, File configDir) throws InitException {
         /*
         String logConfig = (String) params.get("log_config");
         if (logConfig != null) {
@@ -170,9 +171,16 @@ public class StockQuotesJMSDataAdapter implements SmartDataProvider, ExtendedMes
         logger.info("StockQuotesJMSDataAdapter ready.");
     }
 
-    public void setListener(ItemEventListener listener) {
-        //this listener will pass updates to Lightstreamer Kernel
-        this.listener = listener;
+    @Override
+    public CompletionStage<ItemManager> getItemManager(String itemName) throws SubscriptionException {
+        if (!isValidItem(itemName)) {
+            throw new SubscriptionException("(Subscribing) Unexpected item: " + itemName);
+        }
+        return CompletableFuture.completedFuture(new StockItemManager(itemName));
+    }
+
+    @Override
+    public void shutdown() {
     }
 
     /**
@@ -194,138 +202,144 @@ public class StockQuotesJMSDataAdapter implements SmartDataProvider, ExtendedMes
         return true;
     }
 
-    /**
-     * Called by Lightstreamer Kernel on item subscription.
-     */
-    public void subscribe(String itemName, Object itemHandle, boolean needsIterator) throws SubscriptionException, FailureException {
-        logger.info("Subscribing to " + itemName);
+    //////////////////// ItemManager
 
-        //make some check to be sure we are subscribing to a valid item
-        if (!isValidItem(itemName)) {
-            //not a valid item
-            throw new SubscriptionException("(Subscribing) Unexpected item: " + itemName);
+    private class StockItemManager implements ItemManager {
+
+        private final String itemName;
+
+        StockItemManager(String itemName) {
+            this.itemName = itemName;
         }
 
-        logger.debug("(Subscribing) Valid item: " + itemName);
-
-        //Generate an unique ID to represent the itemHandle object. This ID will be then
-        //sent to the Generator which in turn will return it on each item update so that
-        //the correct handle can be passed to the smartUpdate method.
-        String uniqueId = String.valueOf(nextHandleId++);
-
-        //create an object to contain some basic attributes for the item
-        //this item will be useful for snapshot handling and unsubscription calls
-        SubscribedItemAttributes itemAttrs = new SubscribedItemAttributes(itemName,uniqueId);
-
-        //get the writelock to write inside the maps
-        rwLock.writeLock().lock();
-        logger.debug("------------------>Write LOCK 1");
-            //insert item in the list of subscribed items
-            //the item name will be the key, the attributes-object will be the value,
-            subscribedItems.put(itemName, itemAttrs);
-            //insert the handle in a map with the generated unique id as the key
-            handles.put(uniqueId,itemHandle);
-
-            boolean dispatchThread = false;
-            if (lastHeartbeatRandom == -1) {
-                //JMS is not available now, send the inactive flag to the clients
-                //since this call is non-blocking we can issue it here
-                dispatchInactiveFlag(itemAttrs);
-            } else {
-                //insert the subscription request to be dispatched to the Generator via JMS.
-                //This request asks the Simulator to start dispatching the data flow
-                //for this item. Note that it "enables" Generator to send data for this item
-                //and not to "generate" values for this item. In fact, Generator begins the
-                //production of values for all the items on startup.
-                toSendRequests.offer("subscribe"+itemName+"_"+uniqueId);
-                dispatchThread = true;
-            }
-
-        //release the lock
-        logger.debug("------------------>Write UNLOCK 1");
-        rwLock.writeLock().unlock();
-
-        logger.debug("(Subscribing) Inserted in subscribed items list: " + itemName + " ("+uniqueId+")");
-
-        if (dispatchThread) {
-            //Start a thread to send the subscribe request to the Generator.
-            //We should use something better like a pool of threads here, but for simplicity we start a new
-            //thread each time we place some new request to be sent to the Generator inside the queue
-            new SenderThread().start();
+        @Override
+        public Mode getSupportedMode() {
+            return Mode.MERGE;
         }
-   }
 
-    /**
-     * Called by Lightstreamer Kernel on item subscription
-     * if implementing a DataProvider
-     * (this is a SmartDataProvider so it is never called).
-     */
-    public void subscribe(String itemName, boolean needsIterator) throws SubscriptionException, FailureException {
-        //NEVER CALLED
-    }
+        /**
+         * Called by Lightstreamer Kernel on item subscription.
+         */
+        @Override
+        public CompletionStage<Void> subscribe(ItemListener listener) {
+            logger.info("Subscribing to " + itemName);
 
-    /**
-     * Called by Lightstreamer Kernel on item unsubscription.
-     */
-    public void unsubscribe(String itemName) throws SubscriptionException, FailureException {
-        logger.info("Unsubscribing from " + itemName);
+            logger.debug("(Subscribing) Valid item: " + itemName);
 
-        //get the writelock to check if the item is subscribed
-        //and to eventually delete it
-        rwLock.writeLock().lock();
-        logger.debug("------------------>Write LOCK 2");
-            //check if this is a subscribed item.
-            if (!subscribedItems.containsKey(itemName)) {
-                //before throw an exception must release the lock
-                logger.debug("------------------>Write UNLOCK 2");
-                rwLock.writeLock().unlock();
-                //not subscribed item, throw an exception
-                throw new SubscriptionException("(Unsubscribing) Unexpected item: " + itemName);
+            //Generate an unique ID to represent the item subscription. This ID will be then
+            //sent to the Generator which in turn will return it on each item update so that
+            //the correct listener can be identified.
+            String uniqueId = String.valueOf(nextHandleId++);
+
+            //create an object to contain some basic attributes for the item
+            //this item will be useful for snapshot handling and unsubscription calls
+            SubscribedItemAttributes itemAttrs = new SubscribedItemAttributes(itemName,uniqueId);
+            itemAttrs.listener = listener;
+
+            //get the writelock to write inside the maps
+            rwLock.writeLock().lock();
+            logger.debug("------------------>Write LOCK 1");
+                //insert item in the list of subscribed items
+                //the item name will be the key, the attributes-object will be the value,
+                subscribedItems.put(itemName, itemAttrs);
+
+                boolean dispatchThread = false;
+                if (lastHeartbeatRandom == -1) {
+                    //JMS is not available now, send the inactive flag to the clients
+                    //since this call is non-blocking we can issue it here
+                    dispatchInactiveFlag(itemAttrs);
+                } else {
+                    //insert the subscription request to be dispatched to the Generator via JMS.
+                    //This request asks the Simulator to start dispatching the data flow
+                    //for this item. Note that it "enables" Generator to send data for this item
+                    //and not to "generate" values for this item. In fact, Generator begins the
+                    //production of values for all the items on startup.
+                    toSendRequests.offer("subscribe"+itemName+"_"+uniqueId);
+                    dispatchThread = true;
+                }
+
+            //release the lock
+            logger.debug("------------------>Write UNLOCK 1");
+            rwLock.writeLock().unlock();
+
+            logger.debug("(Subscribing) Inserted in subscribed items list: " + itemName + " ("+uniqueId+")");
+
+            if (dispatchThread) {
+                //Start a thread to send the subscribe request to the Generator.
+                //We should use something better like a pool of threads here, but for simplicity we start a new
+                //thread each time we place some new request to be sent to the Generator inside the queue
+                new SenderThread().start();
             }
-            //get the object representing the unsubscribing item
-            SubscribedItemAttributes item = subscribedItems.get(itemName);
-            //remove the item from the subscribed items map
-            subscribedItems.remove(itemName);
-            //remove the handle from the handles map
-            handles.remove(item.handleId);
 
-            boolean dispatchThread = false;
-            if (lastHeartbeatRandom != -1) {
-                //insert the unsubscription request to be dispatched to the Generator via JMS.
-                //This request asks the Simulator to stop dispatching the data flow
-                //for this item (while the Generator keeps on producing the updates without
-                //publishing them over JMS)
-                toSendRequests.offer("unsubscribe"+itemName+"_"+item.handleId);
-                dispatchThread = true;
-            }
-
-        //release the lock
-        logger.debug("------------------>Write UNLOCK 2");
-        rwLock.writeLock().unlock();
-
-        logger.debug("(Unsubscribing) removed from subscribed items list:" + itemName + " (" + item.handleId + ")");
-
-        if (dispatchThread) {
-            //Start a thread to send the unsubscribe request to the Generator.
-            //We should use something better like a pool of threads here, but for simplicity we start a new
-            //thread each time we place some new request to be sent to the Generator inside the queue
-            new SenderThread().start();
+            return CompletableFuture.completedFuture(null);
         }
-    }
 
-    /**
-     * Called by Lightstreamer Kernel to know if the snapshot
-     * is available for an item.
-     */
-    public boolean isSnapshotAvailable(String itemName) throws SubscriptionException {
-        //we generate the updates so we can make snapshots always available (even if JMS is down
-        //we generate locally an "inactive" update)
-        return true;
+        /**
+         * Called by Lightstreamer Kernel to know if the snapshot
+         * is available for an item.
+         */
+        @Override
+        public boolean isSnapshotAvailable() {
+            //we generate the updates so we can make snapshots always available (even if JMS is down
+            //we generate locally an "inactive" update)
+            return true;
 
-        //Note that if the adapter does not know the schema for the items, here we should return true
-        //only if data from the Generator is available:
+            //Note that if the adapter does not know the schema for the items, here we should return true
+            //only if data from the Generator is available:
 
-        // return (lastHeartbeatRandom != -1);
+            // return (lastHeartbeatRandom != -1);
+        }
+
+        /**
+         * Called by Lightstreamer Kernel on item unsubscription.
+         */
+        @Override
+        public CompletionStage<Void> unsubscribe() {
+            logger.info("Unsubscribing from " + itemName);
+
+            //get the writelock to check if the item is subscribed
+            //and to eventually delete it
+            rwLock.writeLock().lock();
+            logger.debug("------------------>Write LOCK 2");
+                //check if this is a subscribed item.
+                if (!subscribedItems.containsKey(itemName)) {
+                    //before logging must release the lock
+                    logger.debug("------------------>Write UNLOCK 2");
+                    rwLock.writeLock().unlock();
+                    //not subscribed item, log a warning
+                    logger.warn("(Unsubscribing) Unexpected item: " + itemName);
+                    return CompletableFuture.completedFuture(null);
+                }
+                //get the object representing the unsubscribing item
+                SubscribedItemAttributes item = subscribedItems.get(itemName);
+                //remove the item from the subscribed items map
+                subscribedItems.remove(itemName);
+
+                boolean dispatchThread = false;
+                if (lastHeartbeatRandom != -1) {
+                    //insert the unsubscription request to be dispatched to the Generator via JMS.
+                    //This request asks the Simulator to stop dispatching the data flow
+                    //for this item (while the Generator keeps on producing the updates without
+                    //publishing them over JMS)
+                    toSendRequests.offer("unsubscribe"+itemName+"_"+item.handleId);
+                    dispatchThread = true;
+                }
+
+            //release the lock
+            logger.debug("------------------>Write UNLOCK 2");
+            rwLock.writeLock().unlock();
+
+            logger.debug("(Unsubscribing) removed from subscribed items list:" + itemName + " (" + item.handleId + ")");
+
+            if (dispatchThread) {
+                //Start a thread to send the unsubscribe request to the Generator.
+                //We should use something better like a pool of threads here, but for simplicity we start a new
+                //thread each time we place some new request to be sent to the Generator inside the queue
+                new SenderThread().start();
+            }
+
+            return CompletableFuture.completedFuture(null);
+        }
     }
 
     /**
@@ -346,16 +360,16 @@ public class StockQuotesJMSDataAdapter implements SmartDataProvider, ExtendedMes
             item.isSnapshotSent = true;
         }
 
-        Object handle = handles.get(item.handleId);
-        if (handle != null) {
+        ItemListener itemListener = item.listener;
+        if (itemListener != null) {
             if (isSnapshot) {
                 //send a complete snapshot with empty fields (apart from the item_status event set to "inactive")
-                listener.smartUpdate(handle,completeInactiveMap,isSnapshot);
+                itemListener.snapshot(completeInactiveMap, null);
                 //Note that if the adapter does not know the schema for the items, here we should send an incomplete
                 //update with the isSnapshot flag set to false (look at isSnapshotAvailable method's comments)
             } else {
                 //send an update containing only the item_status field set to "inactive"
-                listener.smartUpdate(handle,inactiveMap,isSnapshot);
+                itemListener.update(inactiveMap);
             }
         }
         logger.debug("Inactive flag dispatched: " + item.itemName + " (" + item.handleId + ")");
@@ -514,16 +528,15 @@ public class StockQuotesJMSDataAdapter implements SmartDataProvider, ExtendedMes
                 return;
             }
 
-            Object handle = null;
+            ItemListener itemListener = null;
             boolean isSnapshot = false;
 
             //get the object that represents the item
             item = subscribedItems.get(feedMsg.itemName);
             if (item != null) {
-                //get the handle that represents the item subscription
-                handle = handles.get(feedMsg.handleId);
-                if (handle == null) {
-                    //if the handle is not available it means that an unsubscription and a
+                //check that the handle id matches the current subscription
+                if (!item.handleId.equals(feedMsg.handleId)) {
+                    //if the handle id does not match it means that an unsubscription and a
                     //subsequent new subscription were issued by Lightstreamer Kernel and
                     //that this update is related to the old subscription, so even if the
                     //update could be valid, we choose to discard it
@@ -534,6 +547,7 @@ public class StockQuotesJMSDataAdapter implements SmartDataProvider, ExtendedMes
                     logger.debug("Received update for unsubscribed handle: " + feedMsg.itemName + "(" + feedMsg.handleId + ")");
                     return;
                 }
+                itemListener = item.listener;
 
                 //Since the generator always sends a complete update (i.e. it does not filter unchanged values)
                 //we can handle the snapshot flag on the adapter side:
@@ -547,7 +561,11 @@ public class StockQuotesJMSDataAdapter implements SmartDataProvider, ExtendedMes
             logger.debug("Received update for item " + feedMsg.itemName);
 
             // forward the update to Lightstreamer kernel
-            listener.smartUpdate(handle,feedMsg.currentValues,isSnapshot);
+            if (isSnapshot) {
+                itemListener.snapshot(feedMsg.currentValues, null);
+            } else {
+                itemListener.update(feedMsg.currentValues);
+            }
         //release the lock
         logger.debug("------------------>Read UNLOCK 5");
         rwLock.readLock().unlock();
@@ -634,16 +652,16 @@ public class StockQuotesJMSDataAdapter implements SmartDataProvider, ExtendedMes
 
     ///////////////// Utils
 
-    private static String noParam = " is missing.\nProcess exits";
-    private static String useDefault = " is missing. Using default.";
-    private static String isNaN = " must be a number but it isn't. Using default.";
+    private static final String noParam = " is missing.\nProcess exits";
+    private static final String useDefault = " is missing. Using default.";
+    private static final String isNaN = " must be a number but it isn't. Using default.";
 
-    private int getParam(Map params, String toGet, boolean required, int def) throws DataProviderException {
+    private int getParam(Map params, String toGet, boolean required, int def) throws InitException {
         int resInt;
         String res = (String) params.get(toGet);
         if (res == null) {
             if (required) {
-                throw new DataProviderException(toGet + noParam);
+                throw new InitException(toGet + noParam);
             } else {
                 if (logger != null) {
                     logger.warn(toGet + useDefault);
@@ -667,11 +685,11 @@ public class StockQuotesJMSDataAdapter implements SmartDataProvider, ExtendedMes
         return resInt;
     }
 
-    private String getParam (Map params, String toGet, boolean required, String def) throws DataProviderException {
+    private String getParam (Map params, String toGet, boolean required, String def) throws InitException {
         String res = (String) params.get(toGet);
         if (res == null) {
             if (required) {
-                throw new DataProviderException(toGet + noParam);
+                throw new InitException(toGet + noParam);
             } else {
                 if (logger != null) {
                     logger.warn(toGet + useDefault);
@@ -732,7 +750,4 @@ public class StockQuotesJMSDataAdapter implements SmartDataProvider, ExtendedMes
         }
 
     }
-
-
-
 }

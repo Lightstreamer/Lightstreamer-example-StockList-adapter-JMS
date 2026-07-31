@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package stocklist_jms_demo.feed_simulator;
+package com.lightstreamer.stocklist_jms_demo.feed_simulator;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,12 +33,12 @@ import javax.naming.NamingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import stocklist_jms_demo.common.ConnectionLoop;
-import stocklist_jms_demo.common.ExtendedMessageListener;
-import stocklist_jms_demo.common.FeedMessage;
-import stocklist_jms_demo.common.HeartbeatMessage;
-import stocklist_jms_demo.common.JMSHandler;
-import stocklist_jms_demo.common.SubscribedItemAttributes;
+import com.lightstreamer.stocklist_jms_demo.common.ConnectionLoop;
+import com.lightstreamer.stocklist_jms_demo.common.ExtendedMessageListener;
+import com.lightstreamer.stocklist_jms_demo.common.FeedMessage;
+import com.lightstreamer.stocklist_jms_demo.common.HeartbeatMessage;
+import com.lightstreamer.stocklist_jms_demo.common.JMSHandler;
+import com.lightstreamer.stocklist_jms_demo.common.SubscribedItemAttributes;
 
 
 public class Generator implements ExtendedMessageListener, ExternalFeedListener {

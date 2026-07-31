@@ -15,7 +15,9 @@
  * limitations under the License.
  *
  */
-package stocklist_jms_demo.common;
+package com.lightstreamer.stocklist_jms_demo.common;
+
+import com.lightstreamer.adapter.data.ItemListener;
 
 public class SubscribedItemAttributes {
 
@@ -35,6 +37,11 @@ public class SubscribedItemAttributes {
      * The item name.
      */
     public String itemName;
+
+    /**
+     * The listener to receive updates for this item.
+     */
+    public ItemListener listener;
 
 
     public SubscribedItemAttributes(String itemName, String handleId) {
